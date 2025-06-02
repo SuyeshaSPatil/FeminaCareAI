@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Breast Cancer Prediction{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4 text-primary-custom">Breast Cancer Risk Assessment</h1>
+    <p class="lead">Please enter the patient's diagnostic measurements. All fields are required. This tool provides an informational assessment and is not a substitute for professional medical diagnosis.</p>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary-custom text-white">
+                    Input Features
+                </div>
+                <div class="card-body">
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        <div class="row">
+                            {% for field in form %}
+                                <div class="col-md-6 mb-3">
+                                    {{ field|as_crispy_field }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <button type="submit" class="btn btn-primary-custom mt-3">Get Prediction</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            {% if prediction_result %}
+            <div class="card shadow-sm mt-4 mt-md-0">
+                 <div class="card-header {% if prediction_result.label == 'Malignant' %}bg-danger{% elif prediction_result.label == 'Benign' %}bg-success{% else %}bg-secondary{% endif %} text-white">
+                    Prediction Result
+                </div>
+                <div class="card-body">
+                    {% if prediction_result.error %}
+                        <h5 class="card-title text-danger">Error</h5>
+                        <p class="card-text">{{ prediction_result.error }}</p>
+                    {% else %}
+                        <h5 class="card-title">Result:
+                            <span class="fw-bold {% if prediction_result.label == 'Malignant' %}text-danger{% elif prediction_result.label == 'Benign' %}text-success{% endif %}">
+                                {{ prediction_result.label }}
+                            </span>
+                        </h5>
+                        <p class="card-text">Confidence (Malignant): {{ prediction_result.probability }}</p>
+                        <hr>
+                        <p class="small text-muted">
+                            <strong>Disclaimer:</strong> This prediction is based on a machine learning model and is for informational purposes only.
+                            It does not constitute a medical diagnosis. Please consult a qualified healthcare professional for any health concerns
+                            or before making any decisions related to your health or treatment.
+                        </p>
+                        <h6 class="mt-3">Next Steps & Information:</h6>
+                        {% if prediction_result.label == 'Malignant' %}
+                            <p>A "Malignant" indication suggests a higher likelihood. It is crucial to consult with a doctor for further diagnostic tests and guidance.</p>
+                            <ul>
+                                <li><a href="#">Understanding Your Result</a></li>
+                                <li><a href="#">Find a Specialist (Placeholder)</a></li>
+                            </ul>
+                        {% elif prediction_result.label == 'Benign' %}
+                            <p>A "Benign" indication suggests a lower likelihood. Continue with regular check-ups and maintain a healthy lifestyle.</p>
+                             <ul>
+                                <li><a href="#">Maintaining Breast Health</a></li>
+                            </ul>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

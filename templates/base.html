@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}FeminaCare AI{% endblock %}{% if page_title %} | {{ page_title }}{% endif %}</title>
+    <!-- Add your CSS links here (e.g., Tailwind or Bootstrap) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}"> {# Create static/css/custom.css #}
+    <style>
+        body { background-color: #F7FAFC; color: #2D3748; }
+        .navbar-custom { background-color: #4FD1C5; /* Teal */ }
+        .navbar-custom .navbar-brand, .navbar-custom .nav-link { color: white; }
+        .btn-primary-custom { background-color: #ED8936; border-color: #ED8936; color: white; }
+        .btn-secondary-custom { background-color: #F687B3; border-color: #F687B3; color: white; }
+        .text-primary-custom { color: #4FD1C5; }
+        .text-secondary-custom { color: #F687B3; }
+        /* Add more custom styles reflecting your color scheme */
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'core:home' %}">
+                <!-- Your Logo Here -->
+                FeminaCare AI
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'core:home' %}">Home</a>
+                    </li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'core:dashboard' %}">Dashboard</a>
+                        </li>
+                        {% if user.profile.is_admin %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'admin:index' %}">Admin Panel</a>
+                            </li>
+                        {% endif %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                {{ user.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="#">My Profile</a></li> {# Link to user.profile_view #}
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form method="post" action="{% url 'users:logout' %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="dropdown-item">Logout</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'users:login' %}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'users:register' %}">Register</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mt-4 mb-4">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="py-3 text-center navbar-custom text-white">
+        <p>© {% now "Y" %} FeminaCare AI. All rights reserved.</p>
+        <p><a href="#" class="text-white">Privacy Policy</a> | <a href="#" class="text-white">Terms of Service</a></p>
+        <p class="small">Disclaimer: This site provides information and predictions for educational purposes only and is not a substitute for professional medical advice.</p>
+    </footer>
+
+    <!-- Add your JS links here (e.g., Bootstrap JS) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

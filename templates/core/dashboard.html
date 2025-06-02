@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Welcome, {{ request.user.first_name|default:request.user.username }}!</h1>
+</div>
+
+{% if user_profile.is_admin %}
+    <h2>Admin Dashboard</h2>
+    <p>You have administrative privileges.</p>
+    <ul>
+        <li><a href="{% url 'admin:users_customuser_changelist' %}">Manage Users</a></li>
+        <li><a href="#">Upload Patient CSV Data</a></li> {# Link to your upload view #}
+        <li><a href="#">View All Patient Records</a></li>
+    </ul>
+{% elif user_profile.is_patient %}
+    <h2>Patient Dashboard</h2>
+    <p>This is your personalized health space.</p>
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title text-primary-custom">Breast Cancer Prediction</h5>
+                    <p class="card-text">Get an assessment based on your health data.</p>
+                    <a href="#" class="btn btn-primary-custom">Go to Prediction</a> {# Link to prediction:predict_form #}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title text-secondary-custom">My Health Records</h5>
+                    <p class="card-text">View your past data and prediction history.</p>
+                    <a href="#" class="btn btn-secondary-custom">View Records</a> {# Link to health_records:my_records #}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title" style="color: #B794F4;">Menstrual Cycle</h5>
+                    <p class="card-text">Track your cycle and get insights.</p>
+                    <a href="#" class="btn" style="background-color: #B794F4; color:white;">Track Cycle</a>
+                </div>
+            </div>
+        </div>
+        <!-- Add more cards for Face Care, Info Hub, Chatbot -->
+    </div>
+{% else %}
+    <p>Your profile is not fully set up. Please contact support.</p>
+{% endif %}
+
+{% endblock %}

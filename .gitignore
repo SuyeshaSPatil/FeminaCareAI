@@ -1,0 +1,29 @@
+# Python
+*.pyc
+__pycache__/
+venv/
+*.egg-info/
+instance/
+.env
+env/
+ENV/
+
+# Django
+db.sqlite3
+*.log
+local_settings.py
+media/ # If you don't want to version control user uploads (often better to store elsewhere in production)
+staticfiles_collected/
+
+# IDE / Editor specific
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ML Models (if they are very large, consider Git LFS or storing them separately)
+# ml_models/*.pkl # Uncomment if your models are large and you'll manage them differently
+
+# OS generated files
+.DS_Store
+Thumbs.db
